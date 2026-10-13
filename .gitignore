@@ -1,0 +1,12 @@
+build/
+*.nds
+*.elf
+*.map
+preview_*.png
+emu_*.png
+hello*.nds
+mm_tone_test.nds
+tests/topen.c
+third_party/drmp3/
+arm7/build/
+arm9/build/
