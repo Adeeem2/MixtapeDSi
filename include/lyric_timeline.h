@@ -20,6 +20,17 @@ void lyric_window(const LrcSong *song, uint32_t pos_ms,
 int lyric_index_changed(const LrcSong *song, uint32_t old_pos,
                         uint32_t new_pos);
 
+/* Duration used to sweep line idx: distance to the next timestamp,
+ * clamped to [800, 12000] ms. The last line falls back to song_len_ms
+ * (when it is later than the line), then to 4000 ms. */
+uint32_t lyric_line_duration_ms(const LrcSong *song, int idx,
+                                uint32_t song_len_ms);
+
+/* Karaoke progress for line idx: how many of total_chars display columns
+ * should be highlighted at pos_ms (0..total_chars). */
+int lyric_sweep_chars(const LrcSong *song, int idx, uint32_t pos_ms,
+                      int total_chars, uint32_t song_len_ms);
+
 #ifdef __cplusplus
 }
 #endif

@@ -19,6 +19,7 @@ static volatile int s_head = 0;   /* write index (main loop) */
 static volatile int s_tail = 0;   /* read index (stream callback) */
 static volatile int s_fill = 0;   /* frames in ring */
 static volatile uint32_t s_copied = 0;  /* stereo frames handed to HW */
+static uint32_t s_base_ms = 0;          /* stream time at the last seek */
 static volatile int s_underruns = 0;
 static volatile int s_paused = 0;
 static volatile int s_silence_out = 0;  /* consecutive silent callbacks */
@@ -98,6 +99,7 @@ int audio_hw_open(Mp3Decoder *dec) {
     s_rs_prev_l = s_rs_prev_r = 0;
     s_head = s_tail = s_fill = 0;
     s_copied = 0;
+    s_base_ms = 0;
     s_underruns = 0;
     s_silence_out = 0;
     s_paused = 0;
@@ -188,8 +190,8 @@ void audio_hw_close(void) {
 }
 
 uint32_t audio_hw_position_ms(void) {
-    if (!s_rate) return 0;
-    return (uint32_t)(((uint64_t)s_copied * 1000u) / s_rate);
+    if (!s_rate) return s_base_ms;
+    return s_base_ms + (uint32_t)(((uint64_t)s_copied * 1000u) / s_rate);
 }
 
 uint32_t audio_hw_rate(void) { return s_rate; }
@@ -208,6 +210,7 @@ int audio_hw_seek_ms(uint32_t ms) {
     if (mp3_seek_ms(s_dec, ms) != 0) return -1;
     s_head = s_tail = s_fill = 0;
     s_copied = 0;
+    s_base_ms = ms; /* the decoded clock restarts at the seek target */
     s_silence_out = 0;
     s_rs_phase = 0;
     s_rs_prev_l = s_rs_prev_r = 0;

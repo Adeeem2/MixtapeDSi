@@ -85,6 +85,17 @@ int main(void) {
         CHECK(wrap_lines(NULL, 10, 2, scratch, lines) == 1);
         CHECK(wrap_lines("abc", 0, 2, scratch, lines) == 0);
     }
+    /* 9. wrap: long lyric string wraps completely without truncating */
+    {
+        char scratch[512];
+        const char *lines[8];
+        const char *long_lyric = "Et comme c'est chaud, ils feront tchi, et comme c'est chaud, ils feront tchi";
+        int n = wrap_lines(long_lyric, 28, 8, scratch, lines);
+        CHECK(n == 3);
+        CHECK(strcmp(lines[0], "Et comme c'est chaud, ils") == 0);
+        CHECK(strcmp(lines[1], "feront tchi, et comme c'est") == 0);
+        CHECK(strcmp(lines[2], "chaud, ils feront tchi") == 0);
+    }
     printf("test_lyric_text: %d checks passed\n", checks);
     return 0;
 }

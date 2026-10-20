@@ -35,6 +35,28 @@ int main(void) {
       CHECK(p == -1 && c == -1 && n == 0); }
     CHECK(lyric_index_changed(&s, 1000, 6000) == 1);
     CHECK(lyric_index_changed(&s, 1000, 1500) == 0);
+
+    /* karaoke sweep: line 0 runs 1s..5s, line 1 runs 5s..10s */
+    CHECK(lyric_line_duration_ms(&s, 0, 0) == 4000);
+    CHECK(lyric_line_duration_ms(&s, 1, 0) == 5000);
+    CHECK(lyric_line_duration_ms(&s, -1, 0) == 0);
+    CHECK(lyric_sweep_chars(&s, 0, 0, 10, 0) == 0);      /* before start */
+    CHECK(lyric_sweep_chars(&s, 0, 1000, 10, 0) == 0);   /* exact start */
+    CHECK(lyric_sweep_chars(&s, 0, 3000, 10, 0) == 5);   /* halfway */
+    CHECK(lyric_sweep_chars(&s, 0, 4999, 10, 0) == 9);
+    CHECK(lyric_sweep_chars(&s, 0, 5000, 10, 0) == 10);  /* clamped */
+    CHECK(lyric_sweep_chars(&s, 0, 9000, 10, 0) == 10);
+    CHECK(lyric_sweep_chars(&s, -1, 3000, 10, 0) == 0);
+    CHECK(lyric_sweep_chars(&s, 0, 3000, 0, 0) == 0);
+    /* very short gap clamps to 800 ms */
+    { LrcSong q; lrc_parse("[00:01.00]a\n[00:01.20]b\n", &q);
+      CHECK(lyric_line_duration_ms(&q, 0, 0) == 800);
+      CHECK(lyric_sweep_chars(&q, 0, 1600, 10, 0) == 7); }
+    /* last line uses [length:] when available, else 4 s */
+    { LrcSong q; lrc_parse("[00:01.00]a\n", &q);
+      CHECK(lyric_line_duration_ms(&q, 0, 11000) == 10000);
+      CHECK(lyric_line_duration_ms(&q, 0, 0) == 4000); }
+
     /* empty song */
     { LrcSong e; memset(&e, 0, sizeof(e)); CHECK(lyric_active_index(&e, 9999) == -1); }
 

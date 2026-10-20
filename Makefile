@@ -17,11 +17,21 @@ GAME_ICON := icon.bmp
 # These set the information text in the nds file
 GAME_TITLE     := MixtapeDSi
 GAME_SUBTITLE1 := DSi music player
-GAME_SUBTITLE2 := mixtapedsi
+GAME_SUBTITLE2 := v1.0.7
+
+# Homebrew marker for 2020-era launchers. TWiLight Menu++ v15 (and
+# nds-bootstrap v0.35.x) only classify a ROM as homebrew when the ARM9 entry
+# starts with the libnds 1.x startup signature. libnds 2.x replaced that with
+# the bootstub, so the ROM gets misdetected as a retail game and
+# nds-bootstrap fails with "An error has occurred". TWiLight's second
+# homebrew marker is the header title "NDS.TinyFB"; set it with ndstool -g.
+GAME_CODE    := MXDX
+MAKER_CODE   := 00
+HEADER_TITLE := NDS.TinyFB
 
 include $(DEVKITARM)/ds_rules
 
-.PHONY: checkarm7 checkarm9 clean fetch
+.PHONY: checkarm7 checkarm9 clean fetch arm7/$(TARGET).elf arm9/$(TARGET).elf
 
 #---------------------------------------------------------------------------------
 # main targets
@@ -42,7 +52,8 @@ checkarm9:
 #---------------------------------------------------------------------------------
 $(TARGET).nds : arm7/$(TARGET).elf arm9/$(TARGET).elf
 	ndstool -c $(TARGET).nds -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf \
-	-b $(GAME_ICON) "$(GAME_TITLE);$(GAME_SUBTITLE1);$(GAME_SUBTITLE2)"
+	-b $(GAME_ICON) "$(GAME_TITLE);$(GAME_SUBTITLE1);$(GAME_SUBTITLE2)" \
+	-g $(GAME_CODE) $(MAKER_CODE) "$(HEADER_TITLE)"
 
 #---------------------------------------------------------------------------------
 arm7/$(TARGET).elf:

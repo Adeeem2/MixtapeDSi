@@ -12,10 +12,14 @@
   RPSL/RCSL/License texts kept alongside the code. No code copied from
   ctrmus/PandaFlow/ClouDS Music (reference only; ctrmus is GPL-3.0).
 - Sample lyrics in `music/`: original placeholder text written for this project (CC0).
-- Unscii 8/16 (`third_party/fonts/*.hex`, tools/make_fonts.py): public domain
-  (author: Viznut; repo states CC-0 except Unifont-derived full builds, which
-  are NOT used — only `unscii-8.hex`/`unscii-16.hex`). Converted at build
-  time to DS 4bpp tiles (`assets/font_ui.h`, `assets/font_lyr.h`).
+- Unscii-8 (`third_party/fonts/unscii-8.hex`, tools/make_fonts.py): public
+  domain (author: Viznut; repo states CC-0 except Unifont-derived full builds,
+  which are NOT used). Converted at build time to DS 4bpp UI tiles
+  (`assets/font_ui.h`).
+- Barlow Semi Condensed SemiBold (`third_party/fonts/barlow/`, SIL Open Font
+  License 1.1 — `OFL.txt` kept alongside). `tools/make_lyric_font.py`
+  refits the skeleton to an 8x16 4bpp grid and emits `assets/font_lyr.h`;
+  the shipped glyphs are derived raster data, not the original font file.
 - Reference repos (techniques studied, NO code/assets vendored):
   Woopsi (dormant C++ GUI framework — rejected: C++ ABI + own NitroFS/VRAM
   management conflicts with the maxmod/libnds-C engine), NightFoxLib

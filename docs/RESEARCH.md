@@ -112,3 +112,22 @@ The shipped UI keeps cached 8bpp panels and dynamic map cells, updates only
 progress/EQ/transport cells, and uses the real audio position for lyric
 transitions. The active lyric remains on the top display on every bottom-screen
 view; no lyric text is drawn by library, queue, or settings views.
+
+## 8. Additional current DS UI tooling research
+
+The current BlocksDS SDK examples were also checked for a full replacement
+path. `examples/graphics_2d/bg_regular_metamap` demonstrates compact metatile
+maps expanded into hardware tilemaps; `sprites_animated` demonstrates either
+preloaded animation frames or bounded frame copies; and the shared-palette and
+extended-palette examples show the appropriate VRAM/OAM patterns. These
+examples are CC0 and compatible with the native DS graphics model, but they do
+not justify adding a new dependency for this player.
+
+NFLib remains a viable MIT-licensed option for buffered text layers, named
+tiled backgrounds, 256-colour sprites, and scrolling, but its current install
+path targets BlocksDS rather than this repository's existing devkitPro setup.
+Nitro Engine was rejected for this redesign because its GUI/text path is
+3D-rendered and the application does not otherwise use the DS 3D engine.
+TWiLight Menu++ remains a reference for VBlank-safe resource staging and
+selection/scroll behavior; its GPL application and separately licensed theme
+assets are not copied.

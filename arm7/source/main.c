@@ -51,6 +51,7 @@ int main() {
 
 	// Initialize power management
 	pmInit();
+	pmSetSleepAllowed(false);
 
 	// Set up block device peripherals
 	blkInit();
